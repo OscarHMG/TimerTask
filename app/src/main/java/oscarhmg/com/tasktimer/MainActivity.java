@@ -18,11 +18,12 @@ import java.util.TimerTask;
 
 public class MainActivity extends AppCompatActivity {
     private static MaterialDialog dialog = null;
-    int delay = 0; // delay for 5 sec.
-    int period = 30000; // repeat every sec.
+    int delay = 30000; // delay for 30 sec.
+    int period = 3000; // repeat every sec.
     final Handler handler = new Handler();
     Timer timer = null;
     TimerTask timerTask;
+    public static boolean isVisible = false;
 
 
     @Override
@@ -42,7 +43,8 @@ public class MainActivity extends AppCompatActivity {
         timer = new Timer();
         //Initializate the timerTask Object
         initializateTimerTask();
-        timer.schedule(timerTask,delay,period);
+        timer.schedule(timerTask,delay);
+        //timer.schedule(timerTask,delay,period);
     }
 
     public void initializateTimerTask() {
@@ -53,7 +55,7 @@ public class MainActivity extends AppCompatActivity {
                     @Override
                     public void run() {
                         Log.i("DebugMode","30 seconds past");
-                        if (dialog == null) {
+                        if (!isVisible) {
                             showDialog();
                             Log.i("DebugMode","Showing 1 Dialog only...");
                         }
@@ -95,12 +97,17 @@ public class MainActivity extends AppCompatActivity {
             public void onClick(MaterialDialog materialDialog, DialogAction dialogAction) {
                 materialDialog.dismiss();
                 materialDialog.cancel();
+                stopTimerTask();
                 dialog = null;
-                //stopTimerTask();
+                startTimerDialog();
+                Log.i("DebugMode: ","Restarting timer...");
+                isVisible = false;
             }
         });
         dialog = builder.build();
         dialog.show();
+        isVisible = true;
+        stopTimerTask();
 
     }
 
